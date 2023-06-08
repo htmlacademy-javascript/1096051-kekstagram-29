@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм»
 
 * Студент: [Павел Данилец](https://up.htmlacademy.ru/javascript/29/user/1096051).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Остаповец](https://up.htmlacademy.ru/profession/fullstack/6/javascript/29/user/288419).
 
 ---
 
