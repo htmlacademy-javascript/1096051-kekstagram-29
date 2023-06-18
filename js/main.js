@@ -68,6 +68,7 @@ const createPhotography = () => {
   return photography;
 };
 
+// eslint-disable-next-line no-unused-vars
 const photosList = Array.from({length: 25}, createPhotography);
-console.log(photosList);
+
 
