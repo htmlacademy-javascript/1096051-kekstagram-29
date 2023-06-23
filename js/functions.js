@@ -1,3 +1,5 @@
+const MINUTES_IN_HOUR = 60;
+
 const checkLength = (text, lengthNumber) => text.length <= lengthNumber;
 
 // Cтрока короче 20 символов
@@ -49,3 +51,29 @@ getNumberOfString('а я томат'); // NaN
 getNumberOfString(2023); // 2023
 getNumberOfString(-1); // 1
 getNumberOfString(1.5); // 15
+
+const timeTextToNumber = (text) => text.split(':').map((element) => parseInt(element, 10));
+const getTimeInterval = (startTime, endTime) => (endTime[0] - startTime[0]) * MINUTES_IN_HOUR + (endTime[1] - startTime[1]);
+
+const beMeeting = (startWork, endWork, startMeeting, durationMeeting) => {
+  let isMeeting = true;
+
+  const startWorkTime = timeTextToNumber(startWork);
+  const endWorkTime = timeTextToNumber(endWork);
+  const startMeetingTime = timeTextToNumber(startMeeting);
+
+  const workDuration = getTimeInterval(startWorkTime, endWorkTime);
+  const timeForMeeting = getTimeInterval(startMeetingTime, endWorkTime);
+
+  if (durationMeeting > workDuration || timeForMeeting < durationMeeting || timeForMeeting > workDuration) {
+    isMeeting = false;
+  }
+
+  return isMeeting;
+};
+
+beMeeting('08:00', '17:30', '14:00', 90); // true
+beMeeting('8:0', '10:0', '8:0', 120); // true
+beMeeting('08:00', '14:30', '14:00', 90); // false
+beMeeting('14:00', '17:30', '08:0', 90); // false
+beMeeting('8:00', '17:30', '08:00', 900); // false
