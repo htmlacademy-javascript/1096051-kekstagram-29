@@ -56,8 +56,6 @@ const timeTextToNumber = (text) => text.split(':').map((element) => parseInt(ele
 const getTimeInterval = (startTime, endTime) => (endTime[0] - startTime[0]) * MINUTES_IN_HOUR + (endTime[1] - startTime[1]);
 
 const beMeeting = (startWork, endWork, startMeeting, durationMeeting) => {
-  let isMeeting = true;
-
   const startWorkTime = timeTextToNumber(startWork);
   const endWorkTime = timeTextToNumber(endWork);
   const startMeetingTime = timeTextToNumber(startMeeting);
@@ -66,10 +64,10 @@ const beMeeting = (startWork, endWork, startMeeting, durationMeeting) => {
   const timeForMeeting = getTimeInterval(startMeetingTime, endWorkTime);
 
   if (durationMeeting > workDuration || timeForMeeting < durationMeeting || timeForMeeting > workDuration) {
-    isMeeting = false;
+    return false;
   }
 
-  return isMeeting;
+  return true;
 };
 
 beMeeting('08:00', '17:30', '14:00', 90); // true
