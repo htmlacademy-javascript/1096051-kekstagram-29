@@ -1,4 +1,4 @@
-const DATA = {
+const Data = {
   COMMENT_LIST : [
     'Всё отлично!',
     'В целом всё неплохо. Но не всё.',
@@ -34,4 +34,4 @@ const DATA = {
   MAX_LIKES_COUNT : 200
 };
 
-export { DATA };
+export { Data };
