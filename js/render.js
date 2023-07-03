@@ -1,10 +1,16 @@
+import { openBigCard } from './render-big-card.js';
+
 const picturesList = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content;
+const pictureElement = pictureTemplate.querySelector('.picture');
 
 const picturesFragment = document.createDocumentFragment();
 
-const createPicture = ({url, description, likes, comments}) => {
-  const picture = pictureTemplate.cloneNode(true);
+const createPicture = (cardData) => {
+  const { url, description, likes, comments } = cardData;
+
+  const picture = pictureElement.cloneNode(true);
+  picture.addEventListener('click', () => openBigCard(cardData));
 
   picture.querySelector('.picture__img').src = url;
   picture.querySelector('.picture__img').alt = description;
