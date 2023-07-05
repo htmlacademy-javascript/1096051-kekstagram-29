@@ -20,7 +20,7 @@ const getRandomCommentMessage = () => {
 
 const createComment = (getRandomCommentId) => {
   const randomName = Data.NAMES_LIST[getRandomPositiveInteger(0, Data.NAMES_LIST.length - 1)];
-  const randomAvatarUrl = `img/avatar-${getRandomPositiveInteger(0, Data.AVATARS_COUNT)}.svg`;
+  const randomAvatarUrl = `img/avatar-${getRandomPositiveInteger(1, Data.AVATARS_COUNT)}.svg`;
 
   const randomComment = {
     id: getRandomCommentId(0, Data.COMMENTS_COUNT),
