@@ -35,7 +35,7 @@ const showCommentsInRange = (startIndex, countUnhiddenComments, commentsElements
 };
 
 const renderTextCountComments = (countUnhiddenComments, commentsElements) => {
-  commentCount.innerHTML = `${countUnhiddenComments} из <span class="comments-count">${commentsElements.length}</span> комментариев`
+  commentCount.innerHTML = `${countUnhiddenComments} из <span class="comments-count">${commentsElements.length}</span> комментариев`;
 };
 
 const loadComments = () => {
