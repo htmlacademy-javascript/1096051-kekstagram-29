@@ -1,5 +1,7 @@
 import { isEscapeKey } from './util.js';
 
+const COUNT_COMMENTS_OPEN = 5;
+
 const bigCard = document.querySelector('.big-picture');
 const closeButton = bigCard.querySelector('.big-picture__cancel');
 const commentsList = bigCard.querySelector('.social__comments');
@@ -7,51 +9,40 @@ const commentTemplate = commentsList.querySelector('.social__comment');
 const commentCount = bigCard.querySelector('.social__comment-count');
 const buttonLoadComments = bigCard.querySelector('.comments-loader');
 
-const getCountComments = (commentsElements) => {
-  let countComments = 5;
-  if (countComments > commentsElements.length) {
-    countComments = commentsElements.length;
-  }
-  return countComments;
-};
-
-const getCountUnhiddenComments = (startIndex, commentsElements) => {
-  let loadedComments = startIndex + getCountComments(commentsElements);
-  if (loadedComments > commentsElements.length) {
-    loadedComments = commentsElements.length;
-  }
-  return loadedComments;
-};
-
-const getCountShowedComments = (commentsElements) => {
-  const hiddenComments = commentsList.querySelectorAll('.social__comment.hidden');
-  return commentsElements.length - hiddenComments.length;
-};
-
 const showCommentsInRange = (startIndex, countUnhiddenComments, commentsElements) => {
-  for (let i = startIndex; i < countUnhiddenComments; i++) {
-    commentsElements[i].classList.remove('hidden');
+  let iterationCount = 0;
+  while (iterationCount < countUnhiddenComments) {
+    commentsElements[startIndex + iterationCount].classList.remove('hidden');
+    iterationCount++;
   }
 };
 
-const renderTextCountComments = (countUnhiddenComments, commentsElements) => {
-  commentCount.innerHTML = `${countUnhiddenComments} из <span class="comments-count">${commentsElements.length}</span> комментариев`;
+const getCountOpenedComments = () => commentsList.querySelectorAll('.social__comment:not(.hidden)').length;
+
+const renderTextCountComments = (commentsElements) => {
+  commentCount.innerHTML = `${getCountOpenedComments()} из <span class="comments-count">${commentsElements}</span> комментариев`;
 };
 
 const loadComments = () => {
   const commentsElements = commentsList.querySelectorAll('.social__comment');
-  const startIndex = getCountShowedComments(commentsElements); // индекс начала цыкла относительно первого скрытого комментария.
-  const countUnhiddenComments = getCountUnhiddenComments(startIndex, commentsElements); // количество комментариев которое нужно открыть.
+  const countCommentsElements = commentsElements.length;
+  const countOpenedComments = getCountOpenedComments();
+  const startIndex = countOpenedComments; // индекс начала цыкла относительно последнего открытого комментария.
+  const countToShowComments = Math.min(
+    COUNT_COMMENTS_OPEN,
+    countCommentsElements,
+    countCommentsElements - countOpenedComments
+  ); // количество комментариев которое нужно открыть.
 
-  showCommentsInRange(startIndex, countUnhiddenComments, commentsElements);
-  renderTextCountComments(countUnhiddenComments, commentsElements);
+  showCommentsInRange(startIndex, countToShowComments, commentsElements);
+  renderTextCountComments(countCommentsElements);
 };
 
 const onButtonLoadCommentsClick = () => {
   loadComments();
 };
 
-const renderComment = ({avatar, message, name}) => {
+const createComment = ({avatar, message, name}) => {
   const commentElement = commentTemplate.cloneNode(true);
   const commentAvatar = commentElement.querySelector('.social__picture');
   const commentText = commentElement.querySelector('.social__text');
@@ -59,7 +50,6 @@ const renderComment = ({avatar, message, name}) => {
   commentAvatar.src = avatar;
   commentAvatar.alt = name;
   commentText.textContent = message;
-
   commentElement.classList.add('hidden');
 
   return commentElement;
@@ -67,7 +57,7 @@ const renderComment = ({avatar, message, name}) => {
 
 const renderComments = (comments) => {
   const commentsListFragment = document.createDocumentFragment();
-  comments.forEach((element) => commentsListFragment.append(renderComment(element)));
+  comments.forEach((element) => commentsListFragment.append(createComment(element)));
 
   commentsList.innerHTML = '';
   commentsList.append(commentsListFragment);

@@ -20,7 +20,7 @@ const createPicture = ({url, description, likes, comments, id}) => {
 
 const getCardDataFromId = (pictureId, cardsData) => {
   for (let i = 0; i < cardsData.length; i++) {
-    const dataId = Number(cardsData[i].id);
+    const dataId = cardsData[i].id;
     const elementId = Number(pictureId.id);
 
     if (elementId === dataId) {
@@ -31,10 +31,8 @@ const getCardDataFromId = (pictureId, cardsData) => {
 
 const onPictureElementClick = (evt, cardsData) => {
   const targetPictureElement = evt.target.closest('.picture');
-
   if (targetPictureElement) {
-    const cardData = getCardDataFromId(targetPictureElement, cardsData);
-    openBigCard(cardData);
+    openBigCard(getCardDataFromId(targetPictureElement, cardsData));
   }
 };
 
