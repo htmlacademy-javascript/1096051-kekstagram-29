@@ -30,7 +30,6 @@ const loadComments = () => {
   const startIndex = countOpenedComments; // индекс начала цыкла относительно последнего открытого комментария.
   const countToShowComments = Math.min(
     COUNT_COMMENTS_OPEN,
-    countCommentsElements,
     countCommentsElements - countOpenedComments
   ); // количество комментариев которое нужно открыть.
 
