@@ -9,7 +9,7 @@ const picturesFragment = document.createDocumentFragment();
 const createPicture = ({url, description, likes, comments, id}) => {
   const picture = pictureElement.cloneNode(true);
 
-  picture.id = id;
+  picture.dataset.pictureId = id;
   picture.querySelector('.picture__img').src = url;
   picture.querySelector('.picture__img').alt = description;
   picture.querySelector('.picture__likes').textContent = likes;
@@ -18,7 +18,7 @@ const createPicture = ({url, description, likes, comments, id}) => {
   return picture;
 };
 
-const getCardDataFromId = (picture, cardsData) => cardsData.find((card) => card.id === Number(picture.id));
+const getCardDataFromId = (picture, cardsData) => cardsData.find((card) => card.id === Number(picture.dataset.pictureId));
 
 const onPictureElementClick = (evt, cardsData) => {
   const targetPictureElement = evt.target.closest('.picture');
