@@ -18,16 +18,7 @@ const createPicture = ({url, description, likes, comments, id}) => {
   return picture;
 };
 
-const getCardDataFromId = (pictureId, cardsData) => {
-  for (let i = 0; i < cardsData.length; i++) {
-    const dataId = cardsData[i].id;
-    const elementId = Number(pictureId.id);
-
-    if (elementId === dataId) {
-      return cardsData[i];
-    }
-  }
-};
+const getCardDataFromId = (picture, cardsData) => cardsData.find((card) => card.id === Number(picture.id));
 
 const onPictureElementClick = (evt, cardsData) => {
   const targetPictureElement = evt.target.closest('.picture');
