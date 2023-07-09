@@ -37,9 +37,7 @@ const loadComments = () => {
   renderTextCountComments(countCommentsElements);
 };
 
-const onButtonLoadCommentsClick = () => {
-  loadComments();
-};
+const onButtonLoadCommentsClick = () => loadComments();
 
 const createComment = ({avatar, message, name}) => {
   const commentElement = commentTemplate.cloneNode(true);
