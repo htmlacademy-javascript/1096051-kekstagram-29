@@ -50,11 +50,8 @@ const createComment = ({avatar, message, name}) => {
 };
 
 const renderComments = (comments) => {
-  // const commentsListFragment = document.createDocumentFragment();
-  // comments.forEach((element) => commentsListFragment.append(createComment(element)));
   comments.forEach((element) => commentsListElements.push(createComment(element)));
   commentsList.innerHTML = '';
-  // commentsList.append(commentsListFragment);
 
   loadComments();
 };
