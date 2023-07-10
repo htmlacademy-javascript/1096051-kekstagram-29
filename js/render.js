@@ -6,12 +6,10 @@ const pictureElement = pictureTemplate.querySelector('.picture');
 
 const picturesFragment = document.createDocumentFragment();
 
-const createPicture = (cardData) => {
-  const { url, description, likes, comments } = cardData;
-
+const createPicture = ({url, description, likes, comments, id}) => {
   const picture = pictureElement.cloneNode(true);
-  picture.addEventListener('click', () => openBigCard(cardData));
 
+  picture.dataset.pictureId = id;
   picture.querySelector('.picture__img').src = url;
   picture.querySelector('.picture__img').alt = description;
   picture.querySelector('.picture__likes').textContent = likes;
@@ -20,12 +18,22 @@ const createPicture = (cardData) => {
   return picture;
 };
 
+const getCardDataFromId = (picture, cardsData) => cardsData.find((card) => card.id === Number(picture.dataset.pictureId));
+
+const onPictureElementClick = (evt, cardsData) => {
+  const targetPictureElement = evt.target.closest('.picture');
+  if (targetPictureElement) {
+    openBigCard(getCardDataFromId(targetPictureElement, cardsData));
+  }
+};
+
 const renderPicture = (cardsData) => {
   cardsData.forEach((cardData) => {
     picturesFragment.append(createPicture(cardData));
   });
 
   picturesList.append(picturesFragment);
+  picturesList.addEventListener('click', (evt) => onPictureElementClick(evt, cardsData));
 };
 
 export { renderPicture };
