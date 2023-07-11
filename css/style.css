@@ -290,6 +290,22 @@ main {
   text-align: center;
 }
 
+.img-upload__field-wrapper {
+  position: relative;
+}
+
+.img-upload__error {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+
+  color: rgb(255, 155, 155);
+  font-size: 10px;
+  text-align: center;
+}
+
 .img-upload__form {
   position: relative;
   min-height: 569px;
