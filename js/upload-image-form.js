@@ -1,12 +1,13 @@
 import { isEscapeKey } from './util.js';
+import { initEditImage } from './image-edit.js';
 
 const MAX_COUNT_HASHTAGS = 5;
 const MAX_COMMENT_LETTERS = 140;
 
 const form = document.querySelector('.img-upload__form');
-const fieldUploadImage = form.querySelector('.img-upload__input');
 const modalEditImage = form.querySelector('.img-upload__overlay');
 const closeModalButton = form.querySelector('.img-upload__cancel');
+const fieldUploadImage = form.querySelector('.img-upload__input');
 const fieldHashtag = form.querySelector('.text__hashtags');
 const fieldComment = form.querySelector('.text__description');
 const pristine = new Pristine(
@@ -28,6 +29,7 @@ const validateHashtag = (value) => {
   hashtagErorMessge = '';
   const valueArray = value.split(' ').map((element) => element.toLowerCase());
   const regExp = /^#[a-zа-яё0-9]{1,19}$/i;
+
   if (!value) {
     return true;
   }
@@ -80,14 +82,16 @@ const onFieldFocusOut = () => {
 
 const initUploadImageForm = () => {
   form.addEventListener('submit', onSubmitForm);
+  document.addEventListener('keydown', onKeyDown);
   fieldUploadImage.addEventListener('change', onFieldUploadChange);
   closeModalButton.addEventListener('click', closeModal);
-  document.addEventListener('keydown', onKeyDown);
 
   fieldHashtag.addEventListener('focusin', onFieldFocusIn);
   fieldHashtag.addEventListener('focusout', onFieldFocusOut);
   fieldComment.addEventListener('focusin', onFieldFocusIn);
   fieldComment.addEventListener('focusout', onFieldFocusOut);
+
+  initEditImage();
 };
 
 pristine.addValidator(
