@@ -74,19 +74,40 @@ const onButtonPlusClick = () => {
   }
 };
 
-const updateFilterSlider = (filter) => {
-  if (filter) {
-    filterSlider.noUiSlider.updateOptions({
-      range: {
-        min: filter.min,
-        max: filter.max
+const getSliderSettings = (filter) => {
+  const sliderSetting = {
+    connect: 'lower',
+    format: {
+      to: (value) => {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
       },
-      step: filter.step,
-      start: filter.max,
-    });
+      from: (value) => parseFloat(value)
+    }
+  };
+
+  if (filter) {
+    sliderSetting.range = {
+      min: filter.min,
+      max: filter.max
+    };
+    sliderSetting.step = filter.step;
+    sliderSetting.start = filter.max;
+  } else {
+    sliderSetting.range = {
+      min: 0,
+      max: 100
+    };
+    sliderSetting.step = 1;
+    sliderSetting.start = 100;
   }
+
+  return sliderSetting;
 };
 
+const updateFilterSlider = (filter) => filterSlider.noUiSlider.updateOptions(getSliderSettings(filter));
 const isOrigignEffect = () => currentEffect === 'none';
 
 const setChoisenEffect = () => {
@@ -108,7 +129,7 @@ const onRadioFilterClick = (evt) => {
   }
 };
 
-const onSliderEffectUpdate = () => {
+const onSliderUpdate = () => {
   const currentFilter = filtersList[currentEffect];
   if (currentFilter) {
     const postfix = currentFilter.postfix;
@@ -118,29 +139,11 @@ const onSliderEffectUpdate = () => {
   fieldFilterValue.value = filterSlider.noUiSlider.get();
 };
 
-
 const createFilterSlider = () => {
-  noUiSlider.create(filterSlider, {
-    start: 0,
-    range: {
-      min: 0,
-      max: 100
-    },
-    step: 1,
-    connect: 'lower',
-    format: {
-      to: (value) => {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: (value) => parseFloat(value)
-    }
-  });
+  noUiSlider.create(filterSlider, getSliderSettings());
 
   setChoisenEffect();
-  filterSlider.noUiSlider.on('update', onSliderEffectUpdate);
+  filterSlider.noUiSlider.on('update', onSliderUpdate);
   listFiltersElement.addEventListener('click', onRadioFilterClick);
 };
 
