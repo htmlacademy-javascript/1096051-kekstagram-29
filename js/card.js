@@ -5,7 +5,7 @@ import { createComment } from './comment.js';
 
 const getRandomId = createRandomId();
 
-const createPhotography = () => {
+const createPhoto = () => {
   const getRandomCommentId = createRandomId();
   const photography = {};
   const getRandomDescription = Data.DESCRIPTION_LIST[getRandomPositiveInteger(0, Data.DESCRIPTION_LIST.length - 1)];
@@ -19,4 +19,6 @@ const createPhotography = () => {
   return photography;
 };
 
-export { createPhotography };
+const getPhotosList = () => Array.from({length: Data.PHOTOS_COUNT}, createPhoto);
+
+export { getPhotosList };
