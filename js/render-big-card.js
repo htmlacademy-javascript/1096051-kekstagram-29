@@ -29,7 +29,11 @@ const loadComments = () => {
   const countToShowComments = Math.min(
     COUNT_COMMENTS_OPEN,
     countCommentsElements - getCountOpenedComments()
-  ); // количество комментариев которое нужно открыть.
+  );
+
+  if (countToShowComments < COUNT_COMMENTS_OPEN) {
+    buttonLoadComments.classList.add('hidden');
+  }
 
   showCommentsInRange(countToShowComments);
   renderTextCountComments(countCommentsElements);
@@ -77,6 +81,7 @@ function closeBigCard () {
 
   bigCard.classList.add('hidden');
   document.body.classList.remove('modal-open');
+  buttonLoadComments.classList.remove('hidden');
 
   document.removeEventListener('keydown', onKeyDown);
   closeButton.removeEventListener('click', closeBigCard);
