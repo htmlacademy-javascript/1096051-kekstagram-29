@@ -9,6 +9,7 @@ const picturesFragment = document.createDocumentFragment();
 const createPicture = ({url, description, likes, comments, id}) => {
   const picture = pictureElement.cloneNode(true);
 
+  picture.href = url;
   picture.dataset.pictureId = id;
   picture.querySelector('.picture__img').src = url;
   picture.querySelector('.picture__img').alt = description;
@@ -23,6 +24,7 @@ const getCardDataFromId = (picture, cardsData) => cardsData.find((card) => card.
 const onPictureElementClick = (evt, cardsData) => {
   const targetPictureElement = evt.target.closest('.picture');
   if (targetPictureElement) {
+    evt.preventDefault();
     openBigCard(getCardDataFromId(targetPictureElement, cardsData));
   }
 };

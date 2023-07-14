@@ -692,7 +692,7 @@ main {
 .text {
   margin: 0;
   padding: 0;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 
   text-align: center;
   border: none;
@@ -717,6 +717,7 @@ main {
   height: 100px;
 
   margin: 0 auto;
+  margin-bottom: 20px;
   padding: 15px 10px;
 
   font-family: "Open Sans", "Arial", sans-serif;

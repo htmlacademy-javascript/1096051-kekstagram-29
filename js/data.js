@@ -19,12 +19,12 @@ const Data = {
     'Пудж'
   ],
   DESCRIPTION_LIST : [
-    'Хорошая фотка!',
-    'Насыщенность отличная',
-    'Лучшее место!',
-    'Это просто вау!',
-    'Я старался',
-    'Вполне неплохо получилось'
+    '#cool',
+    '#life #money #vacation',
+    '#amazingpalce #green',
+    '#moment #smile',
+    '#happy #nature #lifemagic #ocean',
+    '#rich #car #house #food'
   ],
   PHOTOS_COUNT : 25,
   COMMENT_MESSAGE_COUNT : 2,

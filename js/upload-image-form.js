@@ -1,5 +1,5 @@
 import { isEscapeKey } from './util.js';
-import { initEditImage } from './image-edit.js';
+import { createFilterSlider, resetImage } from './image-edit.js';
 
 const MAX_COUNT_HASHTAGS = 5;
 const MAX_COMMENT_LETTERS = 140;
@@ -19,15 +19,16 @@ const pristine = new Pristine(
   }
 );
 
-let isFocus = false;
 let hashtagErorMessge = '';
 
-const isDuplicateElements = (array) => array.some((element) => array.indexOf(element) !== array.lastIndexOf(element));
-
 const validateHashtag = (value) => {
-  value = value.trim();
   hashtagErorMessge = '';
-  const valueArray = value.split(' ').map((element) => element.toLowerCase());
+  const valueArray = value
+    .trim()
+    .split(' ')
+    .filter((tag) => Boolean(tag.length))
+    .map((element) => element.toLowerCase());
+  const isDuplicateTags = valueArray.length !== new Set(valueArray).size;
   const regExp = /^#[a-zа-яё0-9]{1,19}$/i;
 
   if (!value) {
@@ -36,10 +37,10 @@ const validateHashtag = (value) => {
 
   if (valueArray.length > MAX_COUNT_HASHTAGS) {
     hashtagErorMessge = `Укажите не более ${MAX_COUNT_HASHTAGS} хештегов`;
+  } else if (isDuplicateTags) {
+    hashtagErorMessge = 'Не дублируйте хештеги.';
   } else if (!valueArray.every((element) => regExp.test(element))) {
     hashtagErorMessge = 'Хештег должен начинаться с \'#\', содержать от 1 - 19 букв/цифр, без спец.символы.';
-  } else if (isDuplicateElements(valueArray)) {
-    hashtagErorMessge = 'Нельзя использовать повторяющиеся хештеги, регистр букв не учитывается.';
   }
 
   return !hashtagErorMessge;
@@ -50,12 +51,15 @@ const validateCommment = (value) => value.trim().length <= MAX_COMMENT_LETTERS;
 const closeModal = () => {
   document.body.classList.remove('modal-open');
   modalEditImage.classList.add('hidden');
-  fieldUploadImage.value = '';
+  form.reset();
+  pristine.reset();
+  resetImage();
 };
 
 const openModal = () => {
   modalEditImage.classList.remove('hidden');
   document.body.classList.add('modal-open');
+  createFilterSlider();
 };
 
 const onFieldUploadChange = () => openModal();
@@ -66,33 +70,18 @@ const onSubmitForm = (evt) => {
 };
 
 const onKeyDown = (evt) => {
-  if (isEscapeKey(evt) && !isFocus) {
+  if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeModal();
   }
 };
 
-const onFieldFocusIn = () => {
-  isFocus = true;
+const onFieldKeydown = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.stopPropagation();
+  }
 };
 
-const onFieldFocusOut = () => {
-  isFocus = false;
-};
-
-const initUploadImageForm = () => {
-  form.addEventListener('submit', onSubmitForm);
-  document.addEventListener('keydown', onKeyDown);
-  fieldUploadImage.addEventListener('change', onFieldUploadChange);
-  closeModalButton.addEventListener('click', closeModal);
-
-  fieldHashtag.addEventListener('focusin', onFieldFocusIn);
-  fieldHashtag.addEventListener('focusout', onFieldFocusOut);
-  fieldComment.addEventListener('focusin', onFieldFocusIn);
-  fieldComment.addEventListener('focusout', onFieldFocusOut);
-
-  initEditImage();
-};
 
 pristine.addValidator(
   fieldHashtag,
@@ -105,4 +94,10 @@ pristine.addValidator(
   validateCommment
 );
 
-export { initUploadImageForm };
+form.addEventListener('submit', onSubmitForm);
+document.addEventListener('keydown', onKeyDown);
+fieldUploadImage.addEventListener('change', onFieldUploadChange);
+closeModalButton.addEventListener('click', closeModal);
+
+fieldHashtag.addEventListener('keydown', onFieldKeydown);
+fieldComment.addEventListener('keydown', onFieldKeydown);
