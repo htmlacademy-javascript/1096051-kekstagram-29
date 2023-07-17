@@ -1,8 +1,21 @@
 import { isEscapeKey } from './util.js';
 import { createFilterSlider, resetImage } from './image-edit.js';
+import { sendData } from './api.js';
+import { createModal } from './result-modal.js';
 
 const MAX_COUNT_HASHTAGS = 5;
 const MAX_COMMENT_LETTERS = 140;
+const REG_EXP = /^#[a-zа-яё0-9]{1,19}$/i;
+
+const ButtonText = {
+  BLOCK: 'Отправляю...',
+  UNBLOCK: 'Отправить'
+};
+const HashtagErrorMessage = {
+  MORE_QUANTITY: `Укажите не более ${MAX_COUNT_HASHTAGS} хештегов`,
+  DUPLICATE: 'Не дублируйте хештеги.',
+  FORMAT: 'Хештег должен начинаться с \'#\', содержать от 1 - 19 букв/цифр, без спец.символы.'
+};
 
 const form = document.querySelector('.img-upload__form');
 const modalEditImage = form.querySelector('.img-upload__overlay');
@@ -10,6 +23,7 @@ const closeModalButton = form.querySelector('.img-upload__cancel');
 const fieldUploadImage = form.querySelector('.img-upload__input');
 const fieldHashtag = form.querySelector('.text__hashtags');
 const fieldComment = form.querySelector('.text__description');
+const buttonSubmit = form.querySelector('.img-upload__submit');
 const pristine = new Pristine(
   form,
   {
@@ -19,60 +33,86 @@ const pristine = new Pristine(
   }
 );
 
-let hashtagErorMessge = '';
+let hashtagErrorMessge = '';
 
 const validateHashtag = (value) => {
-  hashtagErorMessge = '';
+  hashtagErrorMessge = '';
   const valueArray = value
     .trim()
     .split(' ')
     .filter((tag) => Boolean(tag.length))
     .map((element) => element.toLowerCase());
   const isDuplicateTags = valueArray.length !== new Set(valueArray).size;
-  const regExp = /^#[a-zа-яё0-9]{1,19}$/i;
 
   if (!value) {
     return true;
   }
 
   if (valueArray.length > MAX_COUNT_HASHTAGS) {
-    hashtagErorMessge = `Укажите не более ${MAX_COUNT_HASHTAGS} хештегов`;
+    hashtagErrorMessge = HashtagErrorMessage.MORE_QUANTITY;
   } else if (isDuplicateTags) {
-    hashtagErorMessge = 'Не дублируйте хештеги.';
-  } else if (!valueArray.every((element) => regExp.test(element))) {
-    hashtagErorMessge = 'Хештег должен начинаться с \'#\', содержать от 1 - 19 букв/цифр, без спец.символы.';
+    hashtagErrorMessge = HashtagErrorMessage.DUPLICATE;
+  } else if (!valueArray.every((element) => REG_EXP.test(element))) {
+    hashtagErrorMessge = HashtagErrorMessage.FORMAT;
   }
 
-  return !hashtagErorMessge;
+  return !hashtagErrorMessge;
 };
 
 const validateCommment = (value) => value.trim().length <= MAX_COMMENT_LETTERS;
-
-const closeModal = () => {
-  document.body.classList.remove('modal-open');
-  modalEditImage.classList.add('hidden');
-  form.reset();
-  pristine.reset();
-  resetImage();
-};
-
-const openModal = () => {
-  modalEditImage.classList.remove('hidden');
-  document.body.classList.add('modal-open');
-  createFilterSlider();
-};
-
-const onFieldUploadChange = () => openModal();
-
-const onSubmitForm = (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-};
 
 const onKeyDown = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
     closeModal();
+  }
+};
+
+function closeModal () {
+  document.body.classList.remove('modal-open');
+  modalEditImage.classList.add('hidden');
+  form.reset();
+  pristine.reset();
+  resetImage();
+
+  document.removeEventListener('keydown', onKeyDown);
+}
+
+const openModal = () => {
+  modalEditImage.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  createFilterSlider();
+
+  document.addEventListener('keydown', onKeyDown);
+};
+
+const onFieldUploadChange = () => openModal();
+
+const blockSubmitButton = () => {
+  buttonSubmit.disabled = true;
+  buttonSubmit.textContent = ButtonText.BLOCK;
+};
+
+const unblockSubmitButton = () => {
+  buttonSubmit.disabled = false;
+  buttonSubmit.textContent = ButtonText.UNBLOCK;
+};
+
+const onSubmitForm = (evt) => {
+  evt.preventDefault();
+
+  const isValid = pristine.validate();
+  if (isValid) {
+    blockSubmitButton();
+    sendData(new FormData(evt.target))
+      .then(closeModal)
+      .then(() => {
+        createModal(true);
+      })
+      .catch(() => {
+        createModal(false);
+      })
+      .finally(unblockSubmitButton);
   }
 };
 
@@ -86,7 +126,7 @@ const onFieldKeydown = (evt) => {
 pristine.addValidator(
   fieldHashtag,
   validateHashtag,
-  () => hashtagErorMessge
+  () => hashtagErrorMessge
 );
 
 pristine.addValidator(
@@ -95,7 +135,6 @@ pristine.addValidator(
 );
 
 form.addEventListener('submit', onSubmitForm);
-document.addEventListener('keydown', onKeyDown);
 fieldUploadImage.addEventListener('change', onFieldUploadChange);
 closeModalButton.addEventListener('click', closeModal);
 
