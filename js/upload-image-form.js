@@ -11,6 +11,10 @@ const ButtonText = {
   BLOCK: 'Отправляю...',
   UNBLOCK: 'Отправить'
 };
+const Modal = {
+  SUCCESS: true,
+  ERROR: false
+};
 const HashtagErrorMessage = {
   MORE_QUANTITY: `Укажите не более ${MAX_COUNT_HASHTAGS} хештегов`,
   DUPLICATE: 'Не дублируйте хештеги.',
@@ -107,10 +111,10 @@ const onSubmitForm = (evt) => {
     sendData(new FormData(evt.target))
       .then(closeModal)
       .then(() => {
-        createModal(true);
+        createModal(Modal.SUCCESS);
       })
       .catch(() => {
-        createModal(false);
+        createModal(Modal.ERROR);
       })
       .finally(unblockSubmitButton);
   }
