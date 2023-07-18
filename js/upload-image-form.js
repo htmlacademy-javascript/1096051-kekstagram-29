@@ -1,7 +1,7 @@
 import { isEscapeKey } from './util.js';
 import { createFilterSlider, resetImage } from './image-edit.js';
 import { sendData } from './api.js';
-import { createModal } from './result-modal.js';
+import { createModal, isErrorMessageShown } from './result-modal.js';
 
 const MAX_COUNT_HASHTAGS = 5;
 const MAX_COMMENT_LETTERS = 140;
@@ -66,7 +66,7 @@ const validateHashtag = (value) => {
 const validateCommment = (value) => value.trim().length <= MAX_COMMENT_LETTERS;
 
 const onKeyDown = (evt) => {
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt) && !isErrorMessageShown()) {
     evt.preventDefault();
     closeModal();
   }
@@ -102,21 +102,25 @@ const unblockSubmitButton = () => {
   buttonSubmit.textContent = ButtonText.UNBLOCK;
 };
 
+const setOnFormSubmit = async (data) => {
+  try {
+    await sendData(data);
+    closeModal();
+    createModal(Modal.SUCCESS);
+  } catch {
+    createModal(Modal.ERROR);
+  } finally {
+    unblockSubmitButton();
+  }
+};
+
 const onSubmitForm = (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
-    sendData(new FormData(evt.target))
-      .then(closeModal)
-      .then(() => {
-        createModal(Modal.SUCCESS);
-      })
-      .catch(() => {
-        createModal(Modal.ERROR);
-      })
-      .finally(unblockSubmitButton);
+    setOnFormSubmit(new FormData(evt.target));
   }
 };
 

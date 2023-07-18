@@ -16,8 +16,8 @@ const onKeyDown = (evt) => {
 };
 
 const onOutsideClick = (evt) => {
-  const isOutside = !evt.target.closest('.success__inner') || !evt.target.closest('.error__inner');
-  if (isOutside) {
+  const isOutside = evt.target.closest('.success__inner') || evt.target.closest('.error__inner');
+  if (!isOutside) {
     removeModal();
   }
 };
@@ -28,6 +28,7 @@ const createModal = (isSucces) => {
     closeButton = modal.querySelector('.success__button');
   } else {
     modal = errorModalElement.cloneNode(true);
+    modal.classList.add('error-message');
     closeButton = modal.querySelector('.error__button');
   }
 
@@ -44,4 +45,6 @@ function removeModal() {
   modal.remove();
 }
 
-export { createModal };
+const isErrorMessageShown = () => document.querySelector('.error-message');
+
+export { createModal, isErrorMessageShown};

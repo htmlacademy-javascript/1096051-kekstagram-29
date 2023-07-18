@@ -3,6 +3,9 @@ import { renderPicture } from './render.js';
 import { getData } from './api.js';
 import { showAlert } from './util.js';
 
-getData()
-  .then((cards) => renderPicture(cards))
-  .catch((err) => showAlert(err.message));
+try {
+  const cardsData = await getData();
+  renderPicture(cardsData);
+} catch(err) {
+  showAlert(err.message);
+}
