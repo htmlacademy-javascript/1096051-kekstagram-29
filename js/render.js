@@ -1,6 +1,6 @@
 import { openBigCard } from './render-big-card.js';
 
-const picturesList = document.querySelector('.pictures');
+const picturesSection = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content;
 const pictureElement = pictureTemplate.querySelector('.picture');
 
@@ -29,13 +29,26 @@ const onPictureElementClick = (evt, cardsData) => {
   }
 };
 
+const clearPictures = () => {
+  const pictures = picturesSection.querySelectorAll('.picture');
+
+  if (!pictures) {
+    return;
+  }
+
+  for (let i = pictures.length - 1; i >= 0; i--) {
+    pictures[i].remove();
+  }
+};
+
 const renderPicture = (cardsData) => {
   cardsData.forEach((cardData) => {
     picturesFragment.append(createPicture(cardData));
   });
 
-  picturesList.append(picturesFragment);
-  picturesList.addEventListener('click', (evt) => onPictureElementClick(evt, cardsData));
+  clearPictures();
+  picturesSection.append(picturesFragment);
+  picturesSection.addEventListener('click', (evt) => onPictureElementClick(evt, cardsData));
 };
 
 export { renderPicture };
