@@ -55,8 +55,10 @@ const setFilters = (cb) => {
   filters.classList.remove('img-filters--inactive');
 
   filtersForm.addEventListener('click', (evt) => {
+
+
     filterButton = evt.target;
-    if (filterButton.classList.contains('img-filters__button')) {
+    if (filterButton.classList.contains('img-filters__button') && !filterButton.classList.contains('img-filters__button--active')) {
       changeActiveFilter(filterButton);
       cb();
     }
