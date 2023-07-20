@@ -1,4 +1,5 @@
 const ALERT_SHOW_TIME = 5000;
+const DEFAULT_DELAY = 500;
 
 const getRandomPositiveInteger = (min, max) => {
   const lower = Math.ceil(Math.min(Math.abs(min), Math.abs(max)));
@@ -46,4 +47,13 @@ const showAlert = (message) => {
   setTimeout(() => alertElement.remove(), ALERT_SHOW_TIME);
 };
 
-export {getRandomPositiveInteger, createRandomId, isEscapeKey, showAlert};
+const debaunce = (cb, delay = DEFAULT_DELAY) => {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => cb.apply(this, rest), delay);
+  };
+};
+
+export {getRandomPositiveInteger, createRandomId, isEscapeKey, showAlert, debaunce};

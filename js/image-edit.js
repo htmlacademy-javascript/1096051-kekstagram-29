@@ -84,15 +84,15 @@ const getSliderSettings = ({min, max, step}) => {
     },
     step: step,
     start: max,
-    format: {
-      to: (value) => {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: (value) => parseFloat(value)
-    }
+    // format: {
+    //   to: (value) => {
+    //     if (Number.isInteger(value)) {
+    //       return value.toFixed(0);
+    //     }
+    //     return value.toFixed(2);
+    //   },
+    //   from: (value) => parseFloat(value)
+    // }
   };
 
   return sliderSetting;
@@ -125,7 +125,6 @@ const onSliderUpdate = () => {
     const postfix = currentFilter.postfix;
     image.style.filter = `${currentFilter.value}(${filterSlider.noUiSlider.get()}${postfix})`;
   }
-
   fieldFilterValue.value = filterSlider.noUiSlider.get();
 };
 
