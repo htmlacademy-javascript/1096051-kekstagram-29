@@ -27,7 +27,6 @@ const onFilterDefaultClick = (data) => {
 
 const onFilterRandomClick = (data) => {
   const randomCards = data
-    .slice()
     .sort(() => getRandomPositiveInteger(0, data.length) - getRandomPositiveInteger(0, data.length))
     .slice(0, MAX_RANDOM_CARDS);
 
@@ -36,27 +35,25 @@ const onFilterRandomClick = (data) => {
 
 const onFilterDiscussedClick = (data) => {
   const mostDiscussedPictures = data
-    .slice()
     .sort((a, b) => b.comments.length - a.comments.length);
   renderPicture(mostDiscussedPictures);
 };
 
 const onFilterClick = (data) => {
+  const copyData = [...data];
+
   if (filterButton.id.endsWith(FiltersList.DEFAULT)) {
-    onFilterDefaultClick(data);
+    onFilterDefaultClick(copyData);
   } else if (filterButton.id.endsWith(FiltersList.RANDOM)) {
-    onFilterRandomClick(data);
+    onFilterRandomClick(copyData);
   } else if (filterButton.id.endsWith(FiltersList.DISCUSSED)) {
-    onFilterDiscussedClick(data);
+    onFilterDiscussedClick(copyData);
   }
 };
 
 const setFilters = (cb) => {
   filters.classList.remove('img-filters--inactive');
-
   filtersForm.addEventListener('click', (evt) => {
-
-
     filterButton = evt.target;
     if (filterButton.classList.contains('img-filters__button') && !filterButton.classList.contains('img-filters__button--active')) {
       changeActiveFilter(filterButton);

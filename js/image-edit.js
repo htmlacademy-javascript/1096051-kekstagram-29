@@ -3,8 +3,6 @@ const Image = {
   MIN_SCALE: 25,
   MAX_SCALE: 100
 };
-const FILTER_NAME = 'effect';
-
 const filtersList = {
   chrome: {
     min: 0,
@@ -47,6 +45,8 @@ const filtersList = {
     step: 1
   }
 };
+const FILTER_NAME = 'effect';
+const ORIGIN_EFFECT = 'none';
 
 const form = document.querySelector('.img-upload__form');
 const image = form.querySelector('.img-upload__preview img');
@@ -56,7 +56,7 @@ const fieldScaleImage = form.querySelector('.scale__control--value');
 const sliderContainer = form.querySelector('.img-upload__effect-level');
 const filterSlider = sliderContainer.querySelector('.effect-level__slider');
 const fieldFilterValue = sliderContainer.querySelector('.effect-level__value');
-let currentEffect = 'none';
+let currentEffect = ORIGIN_EFFECT;
 
 const changeImageScale = (value) => {
   image.style.transform = `scale(${value / 100})`;
@@ -84,15 +84,15 @@ const getSliderSettings = ({min, max, step}) => {
     },
     step: step,
     start: max,
-    // format: {
-    //   to: (value) => {
-    //     if (Number.isInteger(value)) {
-    //       return value.toFixed(0);
-    //     }
-    //     return value.toFixed(2);
-    //   },
-    //   from: (value) => parseFloat(value)
-    // }
+    format: {
+      to: (value) => {
+        if (Number.isInteger(value)) {
+          return value.toFixed(0);
+        }
+        return value.toFixed(1);
+      },
+      from: (value) => parseFloat(value)
+    }
   };
 
   return sliderSetting;
@@ -101,7 +101,7 @@ const getSliderSettings = ({min, max, step}) => {
 const updateFilterSlider = (filter) => filterSlider.noUiSlider.updateOptions(getSliderSettings(filter));
 
 const setChoisenEffect = () => {
-  if (currentEffect === 'none') {
+  if (currentEffect === ORIGIN_EFFECT) {
     sliderContainer.classList.add('hidden');
     image.style.filter = null;
   } else {
@@ -140,7 +140,7 @@ const resetImage = () => {
   image.removeAttribute('style');
   filterSlider.noUiSlider.destroy();
   sliderContainer.classList.add('hidden');
-  currentEffect = 'none';
+  currentEffect = ORIGIN_EFFECT;
 };
 
 buttonMinus.addEventListener('click', onButtonMinusClick);

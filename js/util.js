@@ -9,21 +9,6 @@ const getRandomPositiveInteger = (min, max) => {
   return Math.floor(result);
 };
 
-const createRandomId = () => {
-  const previousIdList = [];
-
-  return (min, max) => {
-    let id = getRandomPositiveInteger(min, max);
-
-    while (previousIdList.includes(id)) {
-      id = getRandomPositiveInteger(min, max);
-    }
-
-    previousIdList.push(id);
-    return id;
-  };
-};
-
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const showAlert = (message) => {
@@ -56,4 +41,4 @@ const debaunce = (cb, delay = DEFAULT_DELAY) => {
   };
 };
 
-export {getRandomPositiveInteger, createRandomId, isEscapeKey, showAlert, debaunce};
+export {getRandomPositiveInteger, isEscapeKey, showAlert, debaunce};
