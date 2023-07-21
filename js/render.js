@@ -5,6 +5,7 @@ const pictureTemplate = document.querySelector('#picture').content;
 const pictureElement = pictureTemplate.querySelector('.picture');
 
 const picturesFragment = document.createDocumentFragment();
+let cardsData;
 
 const createPicture = ({url, description, likes, comments, id}) => {
   const picture = pictureElement.cloneNode(true);
@@ -19,13 +20,13 @@ const createPicture = ({url, description, likes, comments, id}) => {
   return picture;
 };
 
-const getCardDataFromId = (picture, cardsData) => cardsData.find((card) => card.id === Number(picture.dataset.pictureId));
+const getCardDataFromId = (picture) => cardsData.find((card) => card.id === Number(picture.dataset.pictureId));
 
-const onPictureElementClick = (evt, cardsData) => {
+const onPictureElementClick = (evt) => {
   const targetPictureElement = evt.target.closest('.picture');
   if (targetPictureElement) {
     evt.preventDefault();
-    openBigCard(getCardDataFromId(targetPictureElement, cardsData));
+    openBigCard(getCardDataFromId(targetPictureElement));
   }
 };
 
@@ -41,14 +42,16 @@ const clearPictures = () => {
   }
 };
 
-const renderPicture = (cardsData) => {
+const renderPicture = (data) => {
+  cardsData = data;
   cardsData.forEach((cardData) => {
     picturesFragment.append(createPicture(cardData));
   });
 
   clearPictures();
   picturesSection.append(picturesFragment);
-  picturesSection.addEventListener('click', (evt) => onPictureElementClick(evt, cardsData));
+  picturesSection.addEventListener('click', onPictureElementClick);
 };
+
 
 export { renderPicture };

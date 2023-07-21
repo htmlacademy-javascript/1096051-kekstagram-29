@@ -6,7 +6,7 @@ import { createModal, isErrorMessageShown } from './result-modal.js';
 const MAX_COUNT_HASHTAGS = 5;
 const MAX_COMMENT_LETTERS = 140;
 const REG_EXP = /^#[a-zа-яё0-9]{1,19}$/i;
-
+const FILE_TYPES = ['jpg', 'jpeg', 'png'];
 const ButtonText = {
   BLOCK: 'Отправляю...',
   UNBLOCK: 'Отправить'
@@ -23,11 +23,14 @@ const HashtagErrorMessage = {
 
 const form = document.querySelector('.img-upload__form');
 const modalEditImage = form.querySelector('.img-upload__overlay');
+const imagePreview = form.querySelector('.img-upload__preview img');
 const closeModalButton = form.querySelector('.img-upload__cancel');
 const fieldUploadImage = form.querySelector('.img-upload__input');
 const fieldHashtag = form.querySelector('.text__hashtags');
 const fieldComment = form.querySelector('.text__description');
 const buttonSubmit = form.querySelector('.img-upload__submit');
+const effectsPreview = form.querySelectorAll('.effects__preview');
+
 const pristine = new Pristine(
   form,
   {
@@ -90,7 +93,21 @@ const openModal = () => {
   document.addEventListener('keydown', onKeyDown);
 };
 
-const onFieldUploadChange = () => openModal();
+const onFieldUploadChange = () => {
+  const file = fieldUploadImage.files[0];
+  const fileName = file.name.toLowerCase();
+  const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
+  const effectsPreviewList = Array.from(effectsPreview);
+
+  if (matches) {
+    imagePreview.src = URL.createObjectURL(file);
+    effectsPreviewList.forEach((el) => {
+      el.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+    });
+    openModal();
+  }
+};
+
 
 const blockSubmitButton = () => {
   buttonSubmit.disabled = true;
