@@ -1,12 +1,12 @@
 import { isEscapeKey } from './util.js';
 
-const succesModalTemplate = document.querySelector('#success').content;
+const successModalTemplate = document.querySelector('#success').content;
 const errorModalTemplate = document.querySelector('#error').content;
-const succesModalElement = succesModalTemplate.querySelector('.success');
+const successModalElement = successModalTemplate.querySelector('.success');
 const errorModalElement = errorModalTemplate.querySelector('.error');
 
 let modal;
-let closeButton;
+let closeButtonElement;
 
 const onKeyDown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -24,22 +24,22 @@ const onOutsideClick = (evt) => {
 
 const createModal = (isSucces) => {
   if (isSucces) {
-    modal = succesModalElement.cloneNode(true);
-    closeButton = modal.querySelector('.success__button');
+    modal = successModalElement.cloneNode(true);
+    closeButtonElement = modal.querySelector('.success__button');
   } else {
     modal = errorModalElement.cloneNode(true);
     modal.classList.add('error-message');
-    closeButton = modal.querySelector('.error__button');
+    closeButtonElement = modal.querySelector('.error__button');
   }
 
   document.body.append(modal);
-  closeButton.addEventListener('click', removeModal);
+  closeButtonElement.addEventListener('click', removeModal);
   modal.addEventListener('click', onOutsideClick);
   document.addEventListener('keydown', onKeyDown);
 };
 
 function removeModal() {
-  closeButton.removeEventListener('click', removeModal);
+  closeButtonElement.removeEventListener('click', removeModal);
   document.removeEventListener('keydown', onKeyDown);
   modal.removeEventListener('click', onOutsideClick);
   modal.remove();
