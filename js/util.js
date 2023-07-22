@@ -32,7 +32,7 @@ const showAlert = (message) => {
   setTimeout(() => alertElement.remove(), ALERT_SHOW_TIME);
 };
 
-const debaunce = (cb, delay = DEFAULT_DELAY) => {
+const debounce = (cb, delay = DEFAULT_DELAY) => {
   let timeoutId;
 
   return (...rest) => {
@@ -41,4 +41,4 @@ const debaunce = (cb, delay = DEFAULT_DELAY) => {
   };
 };
 
-export {getRandomPositiveInteger, isEscapeKey, showAlert, debaunce};
+export {getRandomPositiveInteger, isEscapeKey, showAlert, debounce};

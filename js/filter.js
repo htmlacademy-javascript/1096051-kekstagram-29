@@ -8,12 +8,12 @@ const FiltersList = {
   DISCUSSED: 'discussed'
 };
 
-const filters = document.querySelector('.img-filters');
-const filtersForm = filters.querySelector('.img-filters__form');
+const filtersElement = document.querySelector('.img-filters');
+const filtersFormElement = filtersElement.querySelector('.img-filters__form');
 let filterButton;
 
 const changeActiveFilter = (choisenFilter) => {
-  const activeFilter = filters.querySelector('.img-filters__button--active');
+  const activeFilter = filtersElement.querySelector('.img-filters__button--active');
 
   if (choisenFilter !== activeFilter) {
     activeFilter.classList.remove('img-filters__button--active');
@@ -52,8 +52,8 @@ const onFilterClick = (data) => {
 };
 
 const setFilters = (cb) => {
-  filters.classList.remove('img-filters--inactive');
-  filtersForm.addEventListener('click', (evt) => {
+  filtersElement.classList.remove('img-filters--inactive');
+  filtersFormElement.addEventListener('click', (evt) => {
     filterButton = evt.target;
     if (filterButton.classList.contains('img-filters__button') && !filterButton.classList.contains('img-filters__button--active')) {
       changeActiveFilter(filterButton);

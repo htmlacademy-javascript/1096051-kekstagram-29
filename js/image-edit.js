@@ -48,64 +48,60 @@ const filtersList = {
 const FILTER_NAME = 'effect';
 const ORIGIN_EFFECT = 'none';
 
-const form = document.querySelector('.img-upload__form');
-const image = form.querySelector('.img-upload__preview img');
-const buttonMinus = form.querySelector('.scale__control--smaller');
-const buttonPlus = form.querySelector('.scale__control--bigger');
-const fieldScaleImage = form.querySelector('.scale__control--value');
-const sliderContainer = form.querySelector('.img-upload__effect-level');
-const filterSlider = sliderContainer.querySelector('.effect-level__slider');
-const fieldFilterValue = sliderContainer.querySelector('.effect-level__value');
+const formElement = document.querySelector('.img-upload__form');
+const imageElement = formElement.querySelector('.img-upload__preview img');
+const buttonMinusElement = formElement.querySelector('.scale__control--smaller');
+const buttonPlusElement = formElement.querySelector('.scale__control--bigger');
+const fieldScaleImageElement = formElement.querySelector('.scale__control--value');
+const sliderContainerElement = formElement.querySelector('.img-upload__effect-level');
+const filterSliderElement = sliderContainerElement.querySelector('.effect-level__slider');
+const fieldFilterValueElement = sliderContainerElement.querySelector('.effect-level__value');
 let currentEffect = ORIGIN_EFFECT;
 
 const changeImageScale = (value) => {
-  image.style.transform = `scale(${value / 100})`;
-  fieldScaleImage.value = `${value}%`;
+  imageElement.style.transform = `scale(${value / 100})`;
+  fieldScaleImageElement.value = `${value}%`;
 };
 
 const onButtonMinusClick = () => {
   changeImageScale(
-    Math.max(parseInt(fieldScaleImage.value, 10) - Image.STEP_SCALE, Image.MIN_SCALE)
+    Math.max(parseInt(fieldScaleImageElement.value, 10) - Image.STEP_SCALE, Image.MIN_SCALE)
   );
 };
 
 const onButtonPlusClick = () => {
   changeImageScale(
-    Math.min(parseInt(fieldScaleImage.value, 10) + Image.STEP_SCALE, Image.MAX_SCALE)
+    Math.min(parseInt(fieldScaleImageElement.value, 10) + Image.STEP_SCALE, Image.MAX_SCALE)
   );
 };
 
-const getSliderSettings = ({min, max, step}) => {
-  const sliderSetting = {
-    connect: 'lower',
-    range: {
-      min: min,
-      max: max
+const getSliderSettings = ({min, max, step}) => ({
+  connect: 'lower',
+  range: {
+    min: min,
+    max: max
+  },
+  step: step,
+  start: max,
+  format: {
+    to: (value) => {
+      if (Number.isInteger(value)) {
+        return value.toFixed(0);
+      }
+      return value.toFixed(1);
     },
-    step: step,
-    start: max,
-    format: {
-      to: (value) => {
-        if (Number.isInteger(value)) {
-          return value.toFixed(0);
-        }
-        return value.toFixed(1);
-      },
-      from: (value) => parseFloat(value)
-    }
-  };
+    from: (value) => parseFloat(value)
+  }
+});
 
-  return sliderSetting;
-};
-
-const updateFilterSlider = (filter) => filterSlider.noUiSlider.updateOptions(getSliderSettings(filter));
+const updateFilterSlider = (filter) => filterSliderElement.noUiSlider.updateOptions(getSliderSettings(filter));
 
 const setChoisenEffect = () => {
   if (currentEffect === ORIGIN_EFFECT) {
-    sliderContainer.classList.add('hidden');
-    image.style.filter = null;
+    sliderContainerElement.classList.add('hidden');
+    imageElement.style.filter = null;
   } else {
-    sliderContainer.classList.remove('hidden');
+    sliderContainerElement.classList.remove('hidden');
     updateFilterSlider(filtersList[currentEffect]);
   }
 };
@@ -123,27 +119,27 @@ const onSliderUpdate = () => {
   const currentFilter = filtersList[currentEffect];
   if (currentFilter) {
     const postfix = currentFilter.postfix;
-    image.style.filter = `${currentFilter.value}(${filterSlider.noUiSlider.get()}${postfix})`;
+    imageElement.style.filter = `${currentFilter.value}(${filterSliderElement.noUiSlider.get()}${postfix})`;
   }
-  fieldFilterValue.value = filterSlider.noUiSlider.get();
+  fieldFilterValueElement.value = filterSliderElement.noUiSlider.get();
 };
 
 const createFilterSlider = () => {
-  noUiSlider.create(filterSlider, getSliderSettings(filtersList[currentEffect]));
+  noUiSlider.create(filterSliderElement, getSliderSettings(filtersList[currentEffect]));
 
   setChoisenEffect();
-  filterSlider.noUiSlider.on('update', onSliderUpdate);
-  form.addEventListener('change', onRadioFilterChange);
+  filterSliderElement.noUiSlider.on('update', onSliderUpdate);
+  formElement.addEventListener('change', onRadioFilterChange);
 };
 
 const resetImage = () => {
-  image.removeAttribute('style');
-  filterSlider.noUiSlider.destroy();
-  sliderContainer.classList.add('hidden');
+  imageElement.removeAttribute('style');
+  filterSliderElement.noUiSlider.destroy();
+  sliderContainerElement.classList.add('hidden');
   currentEffect = ORIGIN_EFFECT;
 };
 
-buttonMinus.addEventListener('click', onButtonMinusClick);
-buttonPlus.addEventListener('click', onButtonPlusClick);
+buttonMinusElement.addEventListener('click', onButtonMinusClick);
+buttonPlusElement.addEventListener('click', onButtonPlusClick);
 
 export { resetImage, createFilterSlider };

@@ -21,18 +21,18 @@ const HashtagErrorMessage = {
   FORMAT: 'Хештег должен начинаться с \'#\', содержать от 1 - 19 букв/цифр, без спец.символы.'
 };
 
-const form = document.querySelector('.img-upload__form');
-const modalEditImage = form.querySelector('.img-upload__overlay');
-const imagePreview = form.querySelector('.img-upload__preview img');
-const closeModalButton = form.querySelector('.img-upload__cancel');
-const fieldUploadImage = form.querySelector('.img-upload__input');
-const fieldHashtag = form.querySelector('.text__hashtags');
-const fieldComment = form.querySelector('.text__description');
-const buttonSubmit = form.querySelector('.img-upload__submit');
-const effectsPreview = form.querySelectorAll('.effects__preview');
+const formElement = document.querySelector('.img-upload__form');
+const modalEditImageElement = formElement.querySelector('.img-upload__overlay');
+const imagePreviewElement = formElement.querySelector('.img-upload__preview img');
+const closeModalButtonElement = formElement.querySelector('.img-upload__cancel');
+const fieldUploadImageElement = formElement.querySelector('.img-upload__input');
+const fieldHashtagElement = formElement.querySelector('.text__hashtags');
+const fieldCommentElement = formElement.querySelector('.text__description');
+const buttonSubmitElement = formElement.querySelector('.img-upload__submit');
+const effectsPreviewElement = formElement.querySelectorAll('.effects__preview');
 
 const pristine = new Pristine(
-  form,
+  formElement,
   {
     classTo: 'img-upload__field-wrapper',
     errorTextParent: 'img-upload__field-wrapper',
@@ -77,8 +77,8 @@ const onKeyDown = (evt) => {
 
 function closeModal () {
   document.body.classList.remove('modal-open');
-  modalEditImage.classList.add('hidden');
-  form.reset();
+  modalEditImageElement.classList.add('hidden');
+  formElement.reset();
   pristine.reset();
   resetImage();
 
@@ -86,7 +86,7 @@ function closeModal () {
 }
 
 const openModal = () => {
-  modalEditImage.classList.remove('hidden');
+  modalEditImageElement.classList.remove('hidden');
   document.body.classList.add('modal-open');
   createFilterSlider();
 
@@ -94,13 +94,14 @@ const openModal = () => {
 };
 
 const onFieldUploadChange = () => {
-  const file = fieldUploadImage.files[0];
+  const file = fieldUploadImageElement.files[0];
   const fileName = file.name.toLowerCase();
   const matches = FILE_TYPES.some((type) => fileName.endsWith(type));
-  const effectsPreviewList = Array.from(effectsPreview);
+  const effectsPreviewList = Array.from(effectsPreviewElement);
 
+  imagePreviewElement.src = '';
   if (matches) {
-    imagePreview.src = URL.createObjectURL(file);
+    imagePreviewElement.src = URL.createObjectURL(file);
     effectsPreviewList.forEach((el) => {
       el.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
     });
@@ -110,13 +111,13 @@ const onFieldUploadChange = () => {
 
 
 const blockSubmitButton = () => {
-  buttonSubmit.disabled = true;
-  buttonSubmit.textContent = ButtonText.BLOCK;
+  buttonSubmitElement.disabled = true;
+  buttonSubmitElement.textContent = ButtonText.BLOCK;
 };
 
 const unblockSubmitButton = () => {
-  buttonSubmit.disabled = false;
-  buttonSubmit.textContent = ButtonText.UNBLOCK;
+  buttonSubmitElement.disabled = false;
+  buttonSubmitElement.textContent = ButtonText.UNBLOCK;
 };
 
 const setOnFormSubmit = async (data) => {
@@ -149,19 +150,19 @@ const onFieldKeydown = (evt) => {
 
 
 pristine.addValidator(
-  fieldHashtag,
+  fieldHashtagElement,
   validateHashtag,
   () => hashtagErrorMessge
 );
 
 pristine.addValidator(
-  fieldComment,
+  fieldCommentElement,
   validateCommment
 );
 
-form.addEventListener('submit', onSubmitForm);
-fieldUploadImage.addEventListener('change', onFieldUploadChange);
-closeModalButton.addEventListener('click', closeModal);
+formElement.addEventListener('submit', onSubmitForm);
+fieldUploadImageElement.addEventListener('change', onFieldUploadChange);
+closeModalButtonElement.addEventListener('click', closeModal);
 
-fieldHashtag.addEventListener('keydown', onFieldKeydown);
-fieldComment.addEventListener('keydown', onFieldKeydown);
+fieldHashtagElement.addEventListener('keydown', onFieldKeydown);
+fieldCommentElement.addEventListener('keydown', onFieldKeydown);
